@@ -25,13 +25,14 @@ def calculate_centroid(points: list) -> tuple:
 
     return centroid
 
-def calculate_medoid(points: list) -> tuple:
+def calculate_medoid(points: list, distance_function=euclidean) -> tuple:
     """
     Calculate the medoid of a cluster of points in n-dimensional space.
 
     Parameters:
     points (list of tuples): A list of coordinates representing the points in the cluster.
-                            Works with any dimensionality (2D, 3D, 4D, etc.)                       
+                            Works with any dimensionality (2D, 3D, 4D, etc.)
+    distance_function (function): Distance function to use (default: euclidean).
 
     Returns:
     tuple: The coordinates of the medoid with the same dimensionality as input.
@@ -43,7 +44,7 @@ def calculate_medoid(points: list) -> tuple:
     all_distances = []
     for i in range(len(points)):
         total_distance = sum(
-            euclidean(points[i], points[j])
+            distance_function(points[i], points[j])
             for j in range(len(points))
         )
         all_distances.append((total_distance, points[i]))
@@ -58,12 +59,13 @@ def calculate_medoid(points: list) -> tuple:
 
     return medoid
 
-def simplified_silhouette_coefficient(clusters: list) -> float:
+def simplified_silhouette_coefficient(clusters: list, distance_function=euclidean) -> float:
     """
     Calculate the simplified silhouette coefficient for a clustering.
 
     Parameters:
     clusters (list): A list of clusters, where each cluster is a list of points.
+    distance_function (function): Distance function to use (default: euclidean).
 
     Returns:
     float: The average simplified silhouette score.
@@ -84,13 +86,13 @@ def simplified_silhouette_coefficient(clusters: list) -> float:
 
             # Distance to own centroid (a)
             own_centroid = centroids[cluster_index]
-            a = sum((point[dim] - own_centroid[dim]) ** 2 for dim in range(len(point)))
+            a = distance_function(point, own_centroid) ** 2
 
             # Distance to nearest other centroid (b)
             b = float("inf")
             for i in range(len(centroids)):
                 if i != cluster_index:
-                    distance = sum((point[dim] - centroids[i][dim]) ** 2 for dim in range(len(point)))
+                    distance = distance_function(point, centroids[i]) ** 2
                     if distance < b:
                         b = distance
 
@@ -99,3 +101,26 @@ def simplified_silhouette_coefficient(clusters: list) -> float:
             silhouettes.append(s)
 
     return sum(silhouettes) / len(silhouettes)
+
+def k_means_objective_function(clusters: list, distance_function=euclidean) -> float:
+    """
+    Calculate the k-means objective function (TD^2).
+
+    Parameters:
+        clusters (list): List of clusters (each cluster is a list of points).
+        distance_function (function): Distance function to use (default: euclidean).
+
+    Returns:
+        float: Total squared distance within clusters.
+    """
+
+    total = 0
+
+    for cluster in clusters:
+        centroid = calculate_centroid(cluster)
+
+        for point in cluster:
+            distance_squared = distance_function(point, centroid) ** 2
+            total += distance_squared
+
+    return total

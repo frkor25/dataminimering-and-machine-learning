@@ -99,3 +99,28 @@ def simplified_silhouette_coefficient(clusters: list) -> float:
             silhouettes.append(s)
 
     return sum(silhouettes) / len(silhouettes)
+
+def k_means_objective_function(clusters: list) -> float:
+    """
+    Calculate the k-means objective function (TD²).
+
+    Parameters:
+        clusters (list): List of clusters (each cluster is a list of points).
+
+    Returns:
+        float: Total squared distance within clusters.
+    """
+
+    total = 0
+
+    for cluster in clusters:
+        centroid = calculate_centroid(cluster)
+
+        for point in cluster:
+            distance_squared = sum(
+                (point[dim] - centroid[dim]) ** 2
+                for dim in range(len(point))
+            )
+            total += distance_squared
+
+    return total
