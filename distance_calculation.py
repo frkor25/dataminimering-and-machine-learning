@@ -29,9 +29,9 @@ def manhattan(p: tuple, q: tuple) -> float:
     """
     return sum(abs(a - b) for a, b in zip(p, q))
 
-def maximum_euclidean(p: tuple, q: tuple) -> float:
+def chebyshev(p: tuple, q: tuple) -> float:
     """
-    Maximum Euclidean distance between two n-dimensional points.
+    Chebyshev (Maximum Euclidean) distance between two n-dimensional points.
 
     Formula:
         d(p, q) = max(|p_i - q_i|)
