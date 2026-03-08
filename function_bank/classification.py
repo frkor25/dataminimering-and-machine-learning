@@ -1,4 +1,4 @@
-from distance_calculation import *
+from .distance_calculation import *
 
 def k_nearest_neighbor_classification(
     train_points: list,

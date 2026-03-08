@@ -1,4 +1,4 @@
-from distance_calculation import *
+from .distance_calculation import *
 
 def calculate_centroid(points: list) -> tuple:
     """
