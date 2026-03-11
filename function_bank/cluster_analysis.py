@@ -86,18 +86,24 @@ def simplified_silhouette_coefficient(clusters: list, distance_function=euclidea
 
             # Distance to own centroid (a)
             own_centroid = centroids[cluster_index]
-            a = distance_function(point, own_centroid) ** 2
+            a = distance_function(point, own_centroid)
 
             # Distance to nearest other centroid (b)
             b = float("inf")
             for i in range(len(centroids)):
                 if i != cluster_index:
-                    distance = distance_function(point, centroids[i]) ** 2
+                    distance = distance_function(point, centroids[i])
                     if distance < b:
                         b = distance
 
             # Calculate silhouette value
-            s = (b - a) / max(a, b)
+            # Handle edge case where a or b is 0
+            if a == 0 and b == 0:
+                s = 0
+            elif max(a, b) == 0:
+                s = 0
+            else:
+                s = (b - a) / max(a, b)
             silhouettes.append(s)
 
     return sum(silhouettes) / len(silhouettes)
