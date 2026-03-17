@@ -76,3 +76,11 @@ def quadratic_form(p: tuple, q: tuple, M: list) -> float:
     """
     diff = [a - b for a, b in zip(p, q)]
     return sum(a * b for a, b in zip(diff, [sum(M[i][j] * diff[j] for j in range(len(diff))) for i in range(len(diff))]))
+
+distance_function = {
+    "euclidean": euclidean,
+    "manhattan": manhattan,
+    "chebyshev": chebyshev,
+    "weighted_euclidean": weighted_euclidean,
+    "quadratic_form": quadratic_form
+}

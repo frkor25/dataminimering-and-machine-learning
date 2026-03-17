@@ -1,12 +1,6 @@
 from .distance_calculation import *
 
-def k_nearest_neighbor_classification(
-    train_points: list,
-    train_labels: list,
-    query_point: tuple,
-    k: int,
-    distance_function=euclidean
-) -> any:
+def k_nearest_neighbor_classification(train_points: list, train_labels: list, query_point: tuple, k: int, distance_function) -> any:
     """
     Classify a point using the K-Nearest Neighbors algorithm.
 

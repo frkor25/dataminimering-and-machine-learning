@@ -130,3 +130,79 @@ def k_means_objective_function(clusters: list, distance_function=euclidean) -> f
             total += distance_squared
 
     return total
+
+def mean(points: list) -> tuple:
+    """
+    Calculate the mean of a list of points in n-dimensional space.
+
+    Parameters:
+        points (list of tuples): A list of coordinates representing the points.
+                                Works with any dimensionality (2D, 3D, 4D, etc.)
+
+    Returns:
+        tuple: The coordinates of the mean with the same dimensionality as input.
+    """
+    if not points:
+        return ()
+
+    count_number_of_points = len(points)
+    number_of_dimensions = len(points[0])
+    
+    # Calculate the mean for each dimension
+    mean_point = tuple(
+        sum(point[dim] for point in points) / count_number_of_points
+        for dim in range(number_of_dimensions)
+    )
+
+    return mean_point
+
+def kmeans(points: list, k: int, means: list, max_iter: int = 100):
+    """
+    Lloyd-style k-means with user-provided initial means.
+
+    Parameters:
+        points (list): Data points.
+        k (int): Number of clusters.
+        means (list): Initial means (length must be k).
+        max_iter (int): Maximum number of iterations.
+
+    Returns:
+        tuple: (clusters, means)
+    """
+    if k <= 0:
+        raise ValueError("k must be positive")
+    if len(means) != k:
+        raise ValueError("len(means) must equal k")
+    if not points:
+        return [[] for _ in range(k)], means[:]
+
+    means = means[:]
+
+    for iteration in range(max_iter):
+        clusters = [[] for _ in range(k)]
+
+        # assignment step
+        for p in points:
+            distances = [euclidean(p, m) for m in means]
+            idx = distances.index(min(distances))
+            clusters[idx].append(p)
+
+        # update step
+        new_means = []
+        for i, c in enumerate(clusters):
+            if c:
+                new_means.append(mean(c))
+            else:
+                new_means.append(means[i])
+
+        print(f"Iteration {iteration + 1}")
+        print("clusters:", clusters)
+        print("means:", new_means)
+        print()
+
+        if new_means == means:
+            break
+
+        means = new_means
+
+    return clusters, means
